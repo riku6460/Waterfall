@@ -1,4 +1,4 @@
-From 17dc40e613083bdbc436c7d7f075e09690fa1c58 Mon Sep 17 00:00:00 2001
+From 4b70871f99e66a4f210d5ff251161c9cbbd7037a Mon Sep 17 00:00:00 2001
 From: Tux <write@imaginarycode.com>
 Date: Tue, 19 Jan 2016 15:13:29 -0700
 Subject: [PATCH] Micro-optimizations
@@ -8,7 +8,7 @@ Subject: [PATCH] Micro-optimizations
 - Don't create a data input stream for every plugin message we get from servers
 
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
-index bcb229c3..b9d624f8 100644
+index bcb229c3..8f0e6f0c 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCord.java
 @@ -557,7 +557,9 @@ public class BungeeCord extends ProxyServer
@@ -18,12 +18,12 @@ index bcb229c3..b9d624f8 100644
 -            translation = MessageFormat.format( customBundle != null && customBundle.containsKey( name ) ? customBundle.getString( name ) : baseBundle.getString( name ), args );
 +            final String string = customBundle != null && customBundle.containsKey( name ) ? customBundle.getString( name ) : baseBundle.getString( name );
 +
-+            translation = ( args.length == 0 ) ? string : MessageFormat.format( string, args );
++            translation = ( args.length == 0 ) ? string.replace( "''", "'" ) : MessageFormat.format( string, args );
          } catch ( MissingResourceException ex )
          {
          }
 diff --git a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
-index 653242f0..d1e57953 100644
+index 552b0b17..a859195e 100644
 --- a/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 +++ b/proxy/src/main/java/net/md_5/bungee/connection/DownstreamBridge.java
 @@ -250,7 +250,6 @@ public class DownstreamBridge extends PacketHandler
@@ -43,5 +43,5 @@ index 653242f0..d1e57953 100644
              String subChannel = in.readUTF();
  
 -- 
-2.24.0
+2.25.1
 
